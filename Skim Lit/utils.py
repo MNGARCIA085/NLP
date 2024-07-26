@@ -1,44 +1,4 @@
-import re
-import nltk
-
-# Download necessary NLTK data
-nltk.download('stopwords')
-nltk.download('punkt')
-nltk.download('wordnet')
-
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
-from nltk.tokenize import word_tokenize
-
-# Initialize lemmatizer and stop words
-lemmatizer = WordNetLemmatizer()
-stop_words = set(stopwords.words('english'))
-
-def preprocess_text(text):
-    """
-    Preprocess the input text by removing specific characters, hyperlinks, and stop words,
-    and by tokenizing and lemmatizing the remaining words.
-    
-    Args:
-    text (str): The text to be processed.
-    
-    Returns:
-    str: The processed text.
-    """
-    try:
-        # Remove specific characters (@ and #) and hyperlinks
-        text = re.sub(r'[@#]', '', text)
-        text = re.sub(r'https?:\/\/\S+', '', text)
-        
-        # Tokenize and lemmatize
-        words = word_tokenize(text)
-        filtered_words = [lemmatizer.lemmatize(word.lower()) for word in words if word.lower() not in stop_words]
-        
-        return ' '.join(filtered_words)
-    except Exception as e:
-        print(f"Error processing text: {e}")
-        return ""
-
+import matplotlib.pyplot as plt
 
 
 def store_results(results, name, score):
@@ -72,6 +32,40 @@ def store_results(results, name, score):
     results[name] = data
     
     return results
+
+
+
+def plot_hist(data, title, xlabel, ylabel, bins_number = None):
+    """
+    Plots a histogram for the given data with optional bin number customization.
+
+    Parameters:
+        data: (pd.Series or np.ndarray): The data to plot.
+        bins_number: (int or sequence, optional): Number of bins or the bin edges. If None, bins 
+                        will be automatically determined.
+    """
+    
+    # number of bins
+    n_bins = bins_number if bins_number else range(1, data.max() + 2)
+    
+    # Plotting the histogram
+    plt.figure(figsize=(10, 6))
+    n, bins, patches = plt.hist(data, bins=n_bins, edgecolor='black')
+
+    # Adding colors to the bins
+    for patch, color in zip(patches, plt.cm.viridis(n / max(n))):
+        patch.set_facecolor(color)
+
+    # Adding titles and labels
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+
+    # Show the plot
+    plt.show()
+
+
+
 
 
 
